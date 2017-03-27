@@ -7,37 +7,19 @@ import java.util.ArrayList;
  * Created by Admin on 27.03.2017.
  */
 public class Orders {
-    private static final String DB_DRIVER = "com.mysql.jdbc.Driver";
-    private static final String DB_CONNECTION = "jdbc:mysql://127.0.0.1:3306/mydb";
-    private static final String DB_USER = "root";
-    private static final String DB_PASSWORD = "26s_volam";
 
-    private static Connection getDBConnection() {
-        Connection dbConnection = null;
-        try {
-            Class.forName(DB_DRIVER);
-        } catch(ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-        try {
-            dbConnection = DriverManager.getConnection(DB_CONNECTION, DB_USER, DB_PASSWORD);
-        }catch(SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return dbConnection;
+    DbProperties props = new DbProperties();
+    static Connection conn;
+    public Orders() throws SQLException {
+        conn = DriverManager.getConnection(props.getUrl(), props.getUser(), props.getPassword());
     }
 
     public static void showAllClients() throws SQLException {
         ArrayList<Client> clients = new ArrayList<Client>();
-
-        Connection dbConnection = null;
         Statement statement = null;
         try {
-            dbConnection = getDBConnection();
-            statement = dbConnection.createStatement();
-
+            statement = conn.createStatement();
             ResultSet rs = statement.executeQuery("SELECT * from client");
-
             while(rs.next()) {
                 Client client = new Client();
                 client.ClientId = rs.getString("ClientId");
@@ -54,20 +36,15 @@ public class Orders {
         } finally {
             if (statement != null)
                 statement.close();
-            if (dbConnection != null)
-                dbConnection.close();
         }
     }
 
     public static void showAllProducts() throws SQLException {
         ArrayList<Product> products = new ArrayList<Product>();
 
-        Connection dbConnection = null;
         Statement statement = null;
         try {
-            dbConnection = getDBConnection();
-            statement = dbConnection.createStatement();
-
+            statement = conn.createStatement();
             ResultSet rs = statement.executeQuery("SELECT * from product");
 
             while(rs.next()) {
@@ -85,8 +62,6 @@ public class Orders {
         } finally {
             if (statement != null)
                 statement.close();
-            if (dbConnection != null)
-                dbConnection.close();
         }
     }
 
@@ -95,12 +70,9 @@ public class Orders {
 
         ArrayList<Product> products = new ArrayList<Product>();
 
-        Connection dbConnection = null;
         Statement statement = null;
         try {
-            dbConnection = getDBConnection();
-            statement = dbConnection.createStatement();
-
+            statement = conn.createStatement();
             ResultSet rs = statement.executeQuery("SELECT * from product");
 
             while(rs.next()) {
@@ -114,8 +86,6 @@ public class Orders {
             for(Product p : products) {
                 if(p.ProductId.equals(id)) {
                     name = p.Name;
-                } else {
-                    ;
                 }
             }
 
@@ -125,8 +95,6 @@ public class Orders {
         } finally {
             if (statement != null)
                 statement.close();
-            if (dbConnection != null)
-                dbConnection.close();
         }
 
         return name;
@@ -136,13 +104,9 @@ public class Orders {
         String name = "";
 
         ArrayList<Client> clients = new ArrayList<Client>();
-
-        Connection dbConnection = null;
         Statement statement = null;
         try {
-            dbConnection = getDBConnection();
-            statement = dbConnection.createStatement();
-
+            statement = conn.createStatement();
             ResultSet rs = statement.executeQuery("SELECT * from client");
 
             while(rs.next()) {
@@ -157,8 +121,6 @@ public class Orders {
             for(Client c : clients) {
                 if(c.ClientId.equals(id)) {
                     name = c.Name;
-                } else {
-                    ;
                 }
             }
 
@@ -168,8 +130,7 @@ public class Orders {
         } finally {
             if (statement != null)
                 statement.close();
-            if (dbConnection != null)
-                dbConnection.close();
+
         }
 
         return name;
@@ -178,12 +139,11 @@ public class Orders {
     public static void showAllOrders() throws SQLException {
         ArrayList<Order> orders = new ArrayList<Order>();
 
-        Connection dbConnection = null;
+
         Statement statement = null;
         try {
-            dbConnection = getDBConnection();
-            statement = dbConnection.createStatement();
 
+            statement = conn.createStatement();
             ResultSet rs = statement.executeQuery("SELECT * from orders");
 
             while(rs.next()) {
@@ -204,8 +164,6 @@ public class Orders {
         } finally {
             if (statement != null)
                 statement.close();
-            if (dbConnection != null)
-                dbConnection.close();
         }
     }
 
@@ -214,12 +172,9 @@ public class Orders {
 
         ArrayList<Client> clients = new ArrayList<Client>();
 
-        Connection dbConnection = null;
         Statement statement = null;
         try {
-            dbConnection = getDBConnection();
-            statement = dbConnection.createStatement();
-
+            statement = conn.createStatement();
             ResultSet rs = statement.executeQuery("SELECT * from client");
 
             while(rs.next()) {
@@ -234,8 +189,6 @@ public class Orders {
             for(Client c : clients) {
                 if(c.Name.equals(clientName)) {
                     result = true;
-                } else {
-                    ;
                 }
             }
 
@@ -245,8 +198,6 @@ public class Orders {
         } finally {
             if (statement != null)
                 statement.close();
-            if (dbConnection != null)
-                dbConnection.close();
         }
         return result;
     }
@@ -256,11 +207,9 @@ public class Orders {
 
         ArrayList<Product> products = new ArrayList<Product>();
 
-        Connection dbConnection = null;
         Statement statement = null;
         try {
-            dbConnection = getDBConnection();
-            statement = dbConnection.createStatement();
+            statement = conn.createStatement();
 
             ResultSet rs = statement.executeQuery("SELECT * from product");
 
@@ -275,8 +224,6 @@ public class Orders {
             for(Product p : products) {
                 if(p.Name.equals(clientName)) {
                     result = true;
-                } else {
-                    ;
                 }
             }
 
@@ -286,8 +233,6 @@ public class Orders {
         } finally {
             if (statement != null)
                 statement.close();
-            if (dbConnection != null)
-                dbConnection.close();
         }
         return result;
     }
@@ -297,12 +242,10 @@ public class Orders {
 
         ArrayList<Client> clients = new ArrayList<Client>();
 
-        Connection dbConnection = null;
         Statement statement = null;
         try {
-            dbConnection = getDBConnection();
-            statement = dbConnection.createStatement();
 
+            statement = conn.createStatement();
             ResultSet rs = statement.executeQuery("SELECT * from client");
 
             while(rs.next()) {
@@ -327,8 +270,6 @@ public class Orders {
         } finally {
             if (statement != null)
                 statement.close();
-            if (dbConnection != null)
-                dbConnection.close();
         }
 
         return result;
@@ -339,11 +280,9 @@ public class Orders {
 
         ArrayList<Product> products = new ArrayList<Product>();
 
-        Connection dbConnection = null;
         Statement statement = null;
         try {
-            dbConnection = getDBConnection();
-            statement = dbConnection.createStatement();
+            statement = conn.createStatement();
 
             ResultSet rs = statement.executeQuery("SELECT * from product");
 
@@ -358,8 +297,6 @@ public class Orders {
             for(Product p : products) {
                 if(p.Name.equals(productName)) {
                     result = Integer.parseInt(p.ProductId);
-                } else {
-                    ;
                 }
             }
 
@@ -368,8 +305,6 @@ public class Orders {
         } finally {
             if (statement != null)
                 statement.close();
-            if (dbConnection != null)
-                dbConnection.close();
         }
 
         return result;
@@ -385,12 +320,12 @@ public class Orders {
 
             String request = "INSERT INTO orders(productName, clientName, prId, clId) VALUES (ProductName, ClientName, + " +  productId + " ," + clientId + ")";
 
-            Connection dbConnection = null;
+
             Statement statement = null;
 
             try {
-                dbConnection = getDBConnection();
-                statement = dbConnection.createStatement();
+
+                statement = conn.createStatement();
 
                 statement.execute(request);
             }catch(SQLException e) {
@@ -398,8 +333,6 @@ public class Orders {
             } finally {
                 if (statement != null)
                     statement.close();
-                if (dbConnection != null)
-                    dbConnection.close();
             }
         } else {
             System.out.println("Fail Product Name or Client");
@@ -409,6 +342,11 @@ public class Orders {
     //============================================================
     public static void main(String[] args) {
         try {
+            Orders orders = new Orders();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
             DriverManager.registerDriver(new com.mysql.jdbc.Driver());
             showAllClients();
             showAllProducts();
@@ -417,6 +355,14 @@ public class Orders {
 
         }catch(SQLException e) {
             System.out.println(e.getMessage());
+        }finally {
+            try {
+                if(conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
