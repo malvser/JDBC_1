@@ -2,6 +2,7 @@ package malov.serg;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.concurrent.Exchanger;
 
 /**
  * Created by Admin on 27.03.2017.
@@ -10,6 +11,7 @@ public class Orders {
 
     DbProperties props = new DbProperties();
     static Connection conn;
+    static int i;
     public Orders() throws SQLException {
         conn = DriverManager.getConnection(props.getUrl(), props.getUser(), props.getPassword());
     }
@@ -316,23 +318,24 @@ public class Orders {
 
             int clientId = getClientIdByName(ClientName);
             int productId = getProductIdByName(ProductName);
-            String info = "";
-
-            String request = "INSERT INTO orders(productName, clientName, prId, clId) VALUES (ProductName, ClientName, + " +  productId + " ," + clientId + ")";
 
 
-            Statement statement = null;
+            //String request = "INSERT INTO orders(productName, clientName, prId, clId) VALUES (ProductName, ClientName, + " +  productId + " ," + clientId + ")";
 
-            try {
+            try (PreparedStatement ps = conn.prepareStatement("INSERT INTO orders(productName, clientName, info, prId, clId) VALUES (?, ?, ?, ?, ?)")) {
+                    ++i;
+                    ps.setString(1, ProductName);
+                    ps.setString(2, ClientName);
+                    ps.setString(3, "Orders № " + i );
+                    ps.setInt(4, productId);
+                    ps.setInt(5, clientId);
+                    ps.execute();
 
-                statement = conn.createStatement();
-
-                statement.execute(request);
-            }catch(SQLException e) {
+            }catch (SQLException e){
+                System.out.println();e.printStackTrace();
+            }
+            catch(Exception e) {
                 System.out.println(e.getMessage());
-            } finally {
-                if (statement != null)
-                    statement.close();
             }
         } else {
             System.out.println("Fail Product Name or Client");
@@ -341,6 +344,7 @@ public class Orders {
 
     //============================================================
     public static void main(String[] args) {
+        ++i;
         try {
             Orders orders = new Orders();
         } catch (SQLException e) {
@@ -350,7 +354,7 @@ public class Orders {
             DriverManager.registerDriver(new com.mysql.jdbc.Driver());
             showAllClients();
             showAllProducts();
-            addOrder("Vanya", "Orange");
+            addOrder("Vasya", "Orange");
             showAllOrders();
 
         }catch(SQLException e) {
